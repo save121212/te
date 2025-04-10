@@ -1,0 +1,41 @@
+name: Install Composer and phpdotenv
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the code from the repo
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # 2. Install Composer
+      - name: Install Composer
+        run: |
+          curl -sS https://getcomposer.org/installer | php
+          sudo mv composer.phar /usr/local/bin/composer
+
+      # 3. Install dependencies including phpdotenv
+      - name: Install Dependencies
+        run: |
+          composer install
+
+      # 4. Create .env file
+      - name: Create .env file
+        run: |
+          echo "TELEGRAM_TOKEN=your_telegram_token" > .env
+          echo "CHAT_ID=your_chat_id" >> .env
+
+      # 5. Add .env to .gitignore
+      - name: Add .env to .gitignore
+        run: |
+          echo ".env" >> .gitignore
+          
+      # 6. Verify composer install
+      - name: Verify Composer Installation
+        run: composer --version
